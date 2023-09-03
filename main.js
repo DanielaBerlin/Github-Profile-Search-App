@@ -1,4 +1,5 @@
 import * as v from './js/variables.js';
+import { getUser, errorMessage } from './js/functions.js';
 
 v.form.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -6,5 +7,10 @@ v.form.addEventListener('submit', (e) => {
   // let user = v.search.value.replace(/\s+/g, "");
     let user = v.search.value.split(' ').join('');
 
-  alert(user);
+    if (user === "") {
+        errorMessage("Input cannot be blank");
+    } else {
+        getUser(user);
+        v.search.value = "";
+  }
 });
