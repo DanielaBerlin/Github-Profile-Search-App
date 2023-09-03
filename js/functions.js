@@ -5,15 +5,25 @@ export async function getUser(username) {
   const response = await fetch(v.apiURL + username);
   const data = await response.json();
 
-  console.log(data);
+  //   console.log(data);
   if (!response.ok) {
     errorMessage('User not found, try another');
   } else {
     displayData(data);
-    // getRepos(username);
+    getRepos(username);
   }
 }
 
+//Get Repos
+async function getRepos(username) {
+  const response = await fetch(v.apiURL + username + '/repos');
+  const data = await response.json();
+
+  console.log(data);
+  displayRepos(data);
+}
+
+//Error message function
 export function errorMessage(msg) {
   v.profile.innerHTML = '';
   document.querySelector('.hide').style.display = 'none';
@@ -28,16 +38,34 @@ function displayData(user) {
                 class="img-thumbnail rounded-circle"
               />
               <h2>${user.name}</h2>
-              <p>${user.login}/p>
+              <p>${user.login}</p>
               <div class="d-grid">
                 <a href="https://github.com/${user.login}" target="_blank" rel="noopener" class="btn btn-outline-secondary">View Profile</a>
               </div>
               <p class="pt-2">
-                <span>${user.followers}Followers</span>
-                <span>${user.following} Following</span>
+                <span> ${user.followers} Followers</span> <span> ${user.following} Following</span>
               </p>
-              <p>${user.public_repos}Repos</p>
-              <p><i class="fas fa-map-marker-alt"></i>${user.location}</p>
+              <p> ${user.public_repos} Repos</p>
+              <p><i class="fas fa-map-marker-alt"></i> ${user.location}</p>
     `;
   v.profile.innerHTML = html;
+}
+
+//Display Repos
+function displayRepos(reportData) {
+  let repo_data = reportData.map((repo) => {
+    return `  <span class="repo border border-rounded p3">
+                <a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a>
+                <p>
+                  <strong>Stars: ${repo.starrazers_count}</strong>
+                  <strong>Watchers: ${repo.watchers_count} </strong>
+                  <strong>Forks: ${repo.forks_count} </strong>
+                </p>
+              </span>`
+        ;
+  });
+    // v.repos.innerHTML = repo_data;
+    v.repos.innerHTML = repo_data.slice(0, 8).join("");
+    document.querySelector('.hide').style.display = 'block';
+
 }
